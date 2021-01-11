@@ -1,26 +1,44 @@
 import React from 'react';
-import logo from './logo.svg';
-import './App.css';
+import { Formik, FormikHelpers, Form, Field, useFormikContext, FormikContextType } from 'formik';
 
-function App() {
+interface IForm {
+  name: string;
+};
+
+//Componente criado apenas para demostrar o uso do Formik Context
+const Emmiter = () => {
+  //Com a função `useFormikContext()` você acessa o estado atual do Formik
+  const formik: FormikContextType<IForm> = useFormikContext();
   return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.tsx</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
-    </div>
+    <div>({formik.getFieldMeta('name').value})</div>
   );
-}
+};
+
+const App = () => {
+  //Função que será executada ao clicar no Submit Button
+  //Ela recebe como parâmetro os valores dos campos do formulário
+  //E uma instância do Formik que permite você executar ações do seu formulário
+  const onHandler = (values: IForm, formikHelpers: FormikHelpers<IForm>) => {
+    console.log(values, formikHelpers);
+  };
+ 
+  return (
+    <Formik
+      initialValues={{ name: '' }}
+      onSubmit={onHandler}
+    >
+      <Form>
+        <div>
+          <div>
+            <Field name="name" />
+            <button type="submit">Submit</button>
+          </div>
+          {/* Chamada do Componente criado acima */}
+          <Emmiter />
+        </div>
+      </Form>
+    </Formik>
+  )
+};
 
 export default App;
